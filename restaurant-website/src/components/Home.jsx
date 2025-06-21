@@ -1,10 +1,12 @@
 import React from 'react';
+import Items from './Items';
 
 const Home = () => {
   return (
+    <>
     <div
-      className="flex flex-col gap-4 w-3xl text-white mt-20 rounded-2xl"
-      style={{ backgroundColor: '#2e2e2e' }}
+      className="flex flex-col gap-4 w-3xl text-white rounded-2xl shadow-2xl"
+      style={{ backgroundColor: '#2e2e2e',paddingTop:'2%' ,paddingBottom:'2%'}}
     >
       <div className="text-center">
         <h1 className="font-bold text-4xl pt-5">
@@ -22,6 +24,10 @@ const Home = () => {
         </p>
       </div>
     </div>
+    <div className='w-4xl bg-blue-200 rounded-2xl shadow-2xl' style={{paddingTop:'20px', paddingBottom:'30px'}}>
+        <Items/>
+      </div>
+    </>
   );
 };
 

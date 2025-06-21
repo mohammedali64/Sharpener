@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Header from './components/Header';
 import Home from './components/Home';
+import Items from './components/Items';
 
 function App() {
   
@@ -10,7 +11,7 @@ function App() {
     <div className='flex w-screen'>
       <Header/>
     </div>
-      <div className=' flex items-center justify-center h-screen py-10'>
+      <div className=' flex items-center justify-center  flex-col gap-10' style={{marginTop:'10%',}}>
         <Home/>
       </div>
       
