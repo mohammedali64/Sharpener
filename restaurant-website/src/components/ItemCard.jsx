@@ -16,6 +16,7 @@ const ItemCard = (props) => {
     id: props.item.id,
     name: props.item.title,
     no: Number(count),
+    iprice:props.item.price,
     price: props.item.price * count,
   };
 
@@ -43,7 +44,7 @@ const ItemCard = (props) => {
         </div>
         <div>
           <label for="Amount" className='font-bold'>Quantity</label>
-          <input type='number' id='Amount' onChange={(e)=>(setCount(e.target.value))} className='Amount bg-amber-50 w-10 rounded-sm' style={{marginLeft:'10px', textAlign:'center'}}></input>
+          <input type='number' min='1' step='1' id='Amount' onChange={(e)=>(setCount(e.target.value))} className='Amount bg-amber-50 w-10 rounded-sm' style={{marginLeft:'10px', textAlign:'center'}}></input>
           <div className='flex justify-end'>
             <button onClick={handleAddToCart} className='font-bold text-white' style={{ paddingTop: 2, paddingBottom: 2, paddingLeft: '25px', paddingRight: '25px', marginTop:'10px',backgroundColor:'brown',borderRadius:'20px'}}>+Add</button>
           </div>

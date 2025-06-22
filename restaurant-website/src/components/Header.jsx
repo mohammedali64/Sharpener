@@ -1,6 +1,6 @@
-import React, { useState,useContext } from 'react';
+import React, {useContext } from 'react';
 import './Header.css';
-import { FaShoppingCart } from 'react-icons/fa'; // using react-icons
+import { FaShoppingCart } from 'react-icons/fa';
 import CartCard from './CartCard';
 import { CartContext } from '../Contexts/CartContext';
 
