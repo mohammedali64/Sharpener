@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import './Header.css';
 import { FaShoppingCart } from 'react-icons/fa'; // using react-icons
 import CartCard from './CartCard';
+import { CartContext } from '../Contexts/CartContext';
 
 const Header = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const{isCartOpen,setIsCartOpen,cartItems,setTotalAmount} = useContext(CartContext);
   const handleCartToggle = () => {
     setIsCartOpen(!isCartOpen);
+    let sum = 0;
+    for(let i = 0; i < cartItems.length; i++){
+      sum += cartItems[i].price;
+    }
+    setTotalAmount(sum);
   };
 
   return (
@@ -16,7 +22,7 @@ const Header = () => {
         <button className="cart-button" onClick={handleCartToggle}>
           <FaShoppingCart className="icon" />
           <span>Your Cart</span>
-          <span className="badge">0</span>
+          <span className="badge">{cartItems.length}</span>
         </button>
       </header>
       {isCartOpen && (
