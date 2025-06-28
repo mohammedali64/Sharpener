@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './Components/Header';
 import Cart from './Components/Cart';
 import { CartContext } from './Contexts/CartContext';
+import { Route, Routes } from 'react-router-dom';
+import About from './Components/About';
+import Home from './Components/Home';
 
 function App() {
   const [openCart, setOpenCart] = useState(false);
@@ -40,8 +43,12 @@ function App() {
     <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal}}>
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       <Header setOpenCart={setOpenCart} openCart={openCart} />
-      <Products />
       <Cart openCart={openCart} setOpenCart={setOpenCart} />
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+      <Route path='/store' element = {<Products />}/>
+      <Route path='/about' element={<About/>}/>
+      </Routes>
     </div>
     </CartContext.Provider>
   );
