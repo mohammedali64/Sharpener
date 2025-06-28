@@ -5,6 +5,9 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [title,setTitle] = useState('');
+  const [openingText,setOpeningText] = useState('');
+  const [releaseDate,setReleaseDate] = useState('');
   const retryIntervalRef = useRef(null);
 
   async function fetchMovieHandler() {
@@ -46,7 +49,101 @@ function App() {
     setError('Retrying cancelled by user.');
   };
 
+  const submitHandler = (event)=>{
+    event.preventDefault();
+    const newMovie = {
+      id: Math.random(),
+      title:title,
+      openingText:openingText,
+      releaseDate:releaseDate
+      }
+      console.log(newMovie);
+      const updatedMovies = [...movies,newMovie];
+      setMovies(updatedMovies);
+  }
+
   return (
+    <>
+    <div style={{width: '50%',display:'flex',justifyItems:'center',alignItems:'center', justifyContent:'center',alignContent:'center', marginLeft:'25%'}}>
+    <form
+        onSubmit={submitHandler}
+        style={{ display: 'flex', flexDirection: 'column',width: '100%', justifyItems:'center',alignItems:'center',backgroundColor:'gray' }}
+      >
+        <label style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          Title
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            fontSize: '1rem',
+          }}
+        />
+
+        <label
+          style={{
+            fontWeight: 'bold',
+            marginTop: '1rem',
+            marginBottom: '0.5rem',
+          }}
+        >
+          Opening Text
+        </label>
+        <textarea
+          rows="4"
+          value={openingText}
+          onChange={(e) => setOpeningText(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            fontSize: '1rem',
+            resize: 'vertical',
+          }}
+        />
+
+        <label
+          style={{
+            fontWeight: 'bold',
+            marginTop: '1rem',
+            marginBottom: '0.5rem',
+          }}
+        >
+          Release Date
+        </label>
+        <input
+          type="date"
+          value={releaseDate}
+          onChange={(e) => setReleaseDate(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            fontSize: '1rem',
+          }}
+        />
+
+        <button
+          type="submit"
+          style={{
+            backgroundColor: '#290045',
+            color: 'white',
+            padding: '0.75rem',
+            fontSize: '1rem',
+            border: 'none',
+            borderRadius: '8px',
+            marginTop: '1.5rem',
+            cursor: 'pointer',
+          }}
+        >
+          Add Movie
+        </button>
+      </form>
+      </div>
     <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
       {loading && <h1 style={styles.centerText}>Loading...</h1>}
 
@@ -64,6 +161,7 @@ function App() {
         </>
       )}
     </div>
+    </>
   );
 }
 

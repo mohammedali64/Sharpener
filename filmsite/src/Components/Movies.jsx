@@ -19,4 +19,4 @@ const Movies = ({ title, openingText, releaseDate }) => {
   );
 };
 
-export default Movies;
+export default React.memo(Movies);
