@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { CartContext } from '../Contexts/CartContext';
 
-const Header = ({ setOpenCart,openCart }) => {
+const Header = () => {
+  const { setOpenCart,openCart,cartElements } = useContext(CartContext);
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -14,7 +16,7 @@ const Header = ({ setOpenCart,openCart }) => {
             <Nav.Link href="#about">ABOUT</Nav.Link>
           </Nav>
           <Button variant="outline-info" onClick={() => setOpenCart(!openCart)}>
-            Cart <sup>0</sup>
+            Cart <sup>{cartElements.length}</sup>
           </Button>
         </Navbar.Collapse>
       </Container>
@@ -22,4 +24,4 @@ const Header = ({ setOpenCart,openCart }) => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

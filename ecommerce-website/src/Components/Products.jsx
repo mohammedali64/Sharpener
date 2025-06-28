@@ -1,30 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
-
-const productsArr = [
-  {
-    title: 'Colors',
-    price: 100,
-    imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%201.png',
-  },
-  {
-    title: 'Black and white Colors',
-    price: 50,
-    imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%202.png',
-  },
-  {
-    title: 'Yellow and Black Colors',
-    price: 70,
-    imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%203.png',
-  },
-  {
-    title: 'Blue Color',
-    price: 100,
-    imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%204.png',
-  }
-];
+import { CartContext } from '../Contexts/CartContext';
 
 const Products = () => {
+  const {productsArr,cartElements,setCartElements,setTotal} = useContext(CartContext);
+  const handleCartArray = (product)=>{
+    console.log(product);
+    const cartElement = {
+      id: product.id,
+      title:product.title,
+      price:product.price,
+      imageUrl:product.imageUrl,
+      quantity:1
+    }
+    const existingItem = cartElements.find(item => item.id === cartElement.id);
+  if (existingItem) {
+    const updatedCart = cartElements.map(item =>
+      item.id === cartElement.id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setCartElements(updatedCart);
+  } else {
+    setCartElements([...cartElements, cartElement]);
+  }
+  }
+  setTotal(cartElements.reduce((acc, item) => acc + item.price * item.quantity, 0));
   return (
     <Container fluid className="py-5 px-4">
       <h2 className="text-center display-5 fw-bold mb-5">MUSIC</h2>
@@ -36,7 +35,7 @@ const Products = () => {
               <Card.Body>
                 <Card.Title className="fw-semibold">{product.title}</Card.Title>
                 <Card.Text className="mb-2">${product.price}</Card.Text>
-                <Button variant="primary" disabled>Add to Cart</Button>
+                <Button variant="primary" onClick={()=>handleCartArray(product)}>Add to Cart</Button>
               </Card.Body>
             </Card>
           </Col>

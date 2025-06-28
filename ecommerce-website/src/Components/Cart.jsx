@@ -1,29 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Row, Col, Button, Image, CloseButton } from 'react-bootstrap';
+import { CartContext } from '../Contexts/CartContext';
 
-const Cart = ({ openCart, setOpenCart }) => {
-  const cartElements = [
-    {
-      title: 'Colors',
-      price: 100,
-      imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%201.png',
-      quantity: 2,
-    },
-    {
-      title: 'Black and white Colors',
-      price: 50,
-      imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%202.png',
-      quantity: 3,
-    },
-    {
-      title: 'Yellow and Black Colors',
-      price: 70,
-      imageUrl: 'https://prasadyash2411.github.io/ecom-website/img/Album%203.png',
-      quantity: 1,
-    },
-  ];
-
-  const total = cartElements.reduce((acc, item) => acc + item.price * item.quantity, 0);
+const Cart = () => {
+  const {cartElements,openCart, setOpenCart,total,setCartElements} = useContext(CartContext);
+  console.log(cartElements);
+  const handleElement = (item)=>{
+    const updatedCart = cartElements.filter((Element)=> Element.id !== item.id);
+    setCartElements(updatedCart);
+  }
+  const handleIncrement = (item) =>{
+    const updatedCart = cartElements.map((Element)=>{
+      if(Element.id === item.id){
+        return {...Element, quantity: Element.quantity + 1};
+      }else{
+        return Element;
+      }
+    })
+    setCartElements(updatedCart);
+  }
+  const handleDecrement = (item)=>{
+    const updatedCart = cartElements.map((Element)=>{
+      if(Element.id === item.id){
+        return {...Element, quantity: Element.quantity - 1};
+      }else{
+        return Element;
+      }
+    }).filter((Element)=> Element.quantity > 0);
+    setCartElements(updatedCart);
+  }
 
   return (
     <>
@@ -59,13 +64,22 @@ const Cart = ({ openCart, setOpenCart }) => {
                 <div>{item.title}</div>
               </Col>
               <Col>${item.price}</Col>
-              <Col>{item.quantity}</Col>
+              <Col>
+                  <Button onClick={()=>handleDecrement(item)}>-</Button>
+                  <Button onClick={()=>handleIncrement(item)} className=' me-3 ms-2'>+</Button>
+                  {item.quantity} 
+              </Col>
+              <Row>
+                <Col className='text-end'>
+                  <Button className='ms-3 text-bg-danger' onClick={()=>handleElement(item)}>Remove</Button>
+                </Col>
+              </Row>
             </Row>
           ))}
 
           <div className="mt-4 text-end pe-3">
             <h5>
-              Total <span className="fw-normal">${total}</span>
+              Total <span className="fw-normal">{total}</span>
             </h5>
           </div>
 
