@@ -31,13 +31,13 @@ const About = () => {
       <footer className="footer text-center py-4">
         <h3 className="text-white fw-bold mb-3 text-black-50">The Generics</h3>
         <div className="d-flex justify-content-center gap-4">
-          <a href="#" target="_blank" rel="noopener noreferrer">
+          <a href="#" target="_blank">
             <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" width="30" />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
+          <a href="#" target="_blank">
             <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" alt="Spotify" width="30" />
           </a>
-          <a href="#" target="_blank" rel="noopener noreferrer">
+          <a href="#" target="_blank">
             <img src="https://cdn-icons-png.flaticon.com/512/1384/1384053.png" alt="Facebook" width="30" />
           </a>
         </div>
@@ -46,4 +46,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default React.memo(About);
