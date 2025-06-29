@@ -7,8 +7,10 @@ import { CartContext } from './Contexts/CartContext';
 import { Route, Routes } from 'react-router-dom';
 import About from './Components/About';
 import Home from './Components/Home';
+import ContactUs from './Components/ContactUs';
 
 function App() {
+  const userDataDb = 'https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/userData.json';
   const [openCart, setOpenCart] = useState(false);
   const[cartElements,setCartElements] = useState([]);
   const [total,setTotal] = useState("");
@@ -40,7 +42,7 @@ function App() {
   }
 ];
   return (
-    <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal}}>
+    <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal,userDataDb}}>
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       <Header setOpenCart={setOpenCart} openCart={openCart} />
       <Cart openCart={openCart} setOpenCart={setOpenCart} />
@@ -48,6 +50,7 @@ function App() {
       <Route path='/' element={<Home/>}/>
       <Route path='/store' element = {<Products />}/>
       <Route path='/about' element={<About/>}/>
+      <Route path='/contactus' element={<ContactUs/>}/>
       </Routes>
     </div>
     </CartContext.Provider>

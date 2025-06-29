@@ -14,6 +14,7 @@ const Header = () => {
             <Nav.Link href="/">HOME</Nav.Link>
             <Nav.Link href="/store">STORE</Nav.Link>
             <Nav.Link href='/about'>ABOUT</Nav.Link>
+            <Nav.Link href='/contactus'>CONTACT US</Nav.Link>
           </Nav>
           <Button variant="outline-info" onClick={() => setOpenCart(!openCart)}>
             Cart <sup>{cartElements.length}</sup>

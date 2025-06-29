@@ -4,7 +4,6 @@ import { CartContext } from '../Contexts/CartContext';
 
 const Cart = () => {
   const {cartElements,openCart, setOpenCart,total,setCartElements} = useContext(CartContext);
-  console.log(cartElements);
   const handleElement = (item)=>{
     const updatedCart = cartElements.filter((Element)=> Element.id !== item.id);
     setCartElements(updatedCart);
