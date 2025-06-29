@@ -3,6 +3,7 @@ import classes from './AuthForm.module.css';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../Contexts/auth-context';
+import { CartContext } from '../../Contexts/CartContext';
 
 const AuthForm = () => {
   const API_KEY = 'AIzaSyCPyLCs84sAfKxwN-ld71RMaAFUsgRaHVA';
@@ -13,6 +14,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const { setCartElements, crudApi } = useContext(CartContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -45,22 +47,34 @@ const AuthForm = () => {
       });
 
       const data = await res.json();
-      setIsLoading(false);
 
       if (!res.ok) {
         throw new Error(data.error.message || 'Authentication failed!');
       }
 
-      authCtx.login(data.idToken);
-      navigate('/');
+      const safeEmail = data.email.replace(/[@.]/g, '');
+      const userCartApi = `${crudApi}-${safeEmail}`;
 
+      // Fetch the user's cart from crudcrud
+      const cartRes = await fetch(userCartApi);
+      const cartData = await cartRes.json();
+
+      // Add `crudId` to each item from _id
+      const transformedCart = cartData.map((item) => ({
+        ...item,
+        crudId: item._id,
+      }));
+
+      setCartElements(transformedCart);
+
+      // Save to context
+      authCtx.login(data.idToken, data.email);
+      setIsLoading(false);
+      navigate('/');
     } catch (err) {
       setIsLoading(false);
       setErrorMsg(err.message);
     }
-    setTimeout(()=>{
-      authCtx.logout();
-    },5000);
   };
 
   return (

@@ -3,31 +3,71 @@ import { Row, Col, Button, Image, CloseButton } from 'react-bootstrap';
 import { CartContext } from '../Contexts/CartContext';
 
 const Cart = () => {
-  const {cartElements,openCart, setOpenCart,total,setCartElements} = useContext(CartContext);
-  const handleElement = (item)=>{
-    const updatedCart = cartElements.filter((Element)=> Element.id !== item.id);
-    setCartElements(updatedCart);
-  }
-  const handleIncrement = (item) =>{
-    const updatedCart = cartElements.map((Element)=>{
-      if(Element.id === item.id){
-        return {...Element, quantity: Element.quantity + 1};
-      }else{
-        return Element;
+  const { cartElements, openCart, setOpenCart, total, setCartElements, crudApi } = useContext(CartContext);
+  const email = localStorage.getItem('email');
+  const safeEmail = email ? email.replace(/[@.]/g, '') : '';
+  const userCartApi = `${crudApi}-${safeEmail}`;
+
+  const updateCrudCrud = async (crudId, updatedItem) => {
+    try {
+      await fetch(`${userCartApi}/${crudId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedItem),
+      });
+    } catch (err) {
+      console.error('Error updating item in crudcrud:', err);
+    }
+  };
+
+  const deleteFromCrudCrud = async (crudId) => {
+    try {
+      await fetch(`${userCartApi}/${crudId}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.error('Error deleting item from crudcrud:', err);
+    }
+  };
+
+  const handleIncrement = async (item) => {
+    const updatedCart = cartElements.map((element) => {
+      if (element.id === item.id) {
+        const updatedItem = { ...element, quantity: element.quantity + 1 };
+        if (element.crudId) updateCrudCrud(element.crudId, updatedItem);
+        return updatedItem;
       }
-    })
+      return element;
+    });
     setCartElements(updatedCart);
-  }
-  const handleDecrement = (item)=>{
-    const updatedCart = cartElements.map((Element)=>{
-      if(Element.id === item.id){
-        return {...Element, quantity: Element.quantity - 1};
-      }else{
-        return Element;
+  };
+
+  const handleDecrement = async (item) => {
+    let updatedCart = cartElements.map((element) => {
+      if (element.id === item.id) {
+        const updatedItem = { ...element, quantity: element.quantity - 1 };
+        if (updatedItem.quantity > 0 && element.crudId) updateCrudCrud(element.crudId, updatedItem);
+        return updatedItem;
       }
-    }).filter((Element)=> Element.quantity > 0);
+      return element;
+    });
+
+    updatedCart = updatedCart.filter((item) => item.quantity > 0);
+
+    if (item.quantity === 1 && item.crudId) {
+      await deleteFromCrudCrud(item.crudId);
+    }
+
     setCartElements(updatedCart);
-  }
+  };
+
+  const handleElement = async (item) => {
+    const updatedCart = cartElements.filter((element) => element.id !== item.id);
+    setCartElements(updatedCart);
+    if (item.crudId) {
+      await deleteFromCrudCrud(item.crudId);
+    }
+  };
 
   return (
     <>
@@ -64,13 +104,13 @@ const Cart = () => {
               </Col>
               <Col>${item.price}</Col>
               <Col>
-                  <Button onClick={()=>handleDecrement(item)}>-</Button>
-                  <Button onClick={()=>handleIncrement(item)} className=' me-3 ms-2'>+</Button>
-                  {item.quantity} 
+                <Button onClick={() => handleDecrement(item)}>-</Button>
+                <Button onClick={() => handleIncrement(item)} className="me-3 ms-2">+</Button>
+                {item.quantity}
               </Col>
               <Row>
-                <Col className='text-end'>
-                  <Button className='ms-3 text-bg-danger' onClick={()=>handleElement(item)}>Remove</Button>
+                <Col className="text-end">
+                  <Button className="ms-3 text-bg-danger" onClick={() => handleElement(item)}>Remove</Button>
                 </Col>
               </Row>
             </Row>
@@ -78,7 +118,7 @@ const Cart = () => {
 
           <div className="mt-4 text-end pe-3">
             <h5>
-              Total <span className="fw-normal">{total}</span>
+              Total <span className="fw-normal">${total}</span>
             </h5>
           </div>
 

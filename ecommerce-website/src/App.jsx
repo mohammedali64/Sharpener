@@ -20,6 +20,7 @@ function App() {
   const [openCart, setOpenCart] = useState(false);
   const [cartElements, setCartElements] = useState([]);
   const [total, setTotal] = useState('');
+  const crudApi = 'https://crudcrud.com/api/757e543a17c34aebb0a26024a2900e9b/';
   
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
@@ -32,7 +33,7 @@ function App() {
   ];
 
   return (
-    <CartContext.Provider value={{ productsArr, cartElements, setCartElements, openCart, setOpenCart, total, setTotal, userDataDb }}>
+    <CartContext.Provider value={{ productsArr, cartElements, setCartElements, openCart, setOpenCart, total, setTotal, userDataDb,crudApi }}>
       <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
         {!isLoggedIn ? (
           <>
