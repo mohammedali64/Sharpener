@@ -58,6 +58,9 @@ const AuthForm = () => {
       setIsLoading(false);
       setErrorMsg(err.message);
     }
+    setTimeout(()=>{
+      authCtx.logout();
+    },5000);
   };
 
   return (
