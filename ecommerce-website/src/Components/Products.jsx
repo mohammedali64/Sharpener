@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { CartContext } from '../Contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const Products = () => {
+  const navigate = useNavigate();
   const {productsArr,cartElements,setCartElements,setTotal} = useContext(CartContext);
   const handleCartArray = (product)=>{
     console.log(product);
@@ -31,7 +33,7 @@ const Products = () => {
         {productsArr.map((product, index) => (
           <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4 d-flex justify-content-center">
             <Card style={{ width: '18rem' }} className="shadow-sm">
-              <Card.Img variant="top" src={product.imageUrl} />
+              <Card.Img variant="top" src={product.imageUrl} onClick={()=>navigate(`/products/${product.id}`)}/>
               <Card.Body>
                 <Card.Title className="fw-semibold">{product.title}</Card.Title>
                 <Card.Text className="mb-2">${product.price}</Card.Text>

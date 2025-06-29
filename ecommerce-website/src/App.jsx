@@ -8,6 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 import About from './Components/About';
 import Home from './Components/Home';
 import ContactUs from './Components/ContactUs';
+import ProductDetail from './Components/ProductDetail';
 
 function App() {
   const userDataDb = 'https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/userData.json';
@@ -48,9 +49,10 @@ function App() {
       <Cart openCart={openCart} setOpenCart={setOpenCart} />
       <Routes>
       <Route path='/' element={<Home/>}/>
-      <Route path='/store' element = {<Products />}/>
+      <Route path='/products' element = {<Products />}/>
       <Route path='/about' element={<About/>}/>
       <Route path='/contactus' element={<ContactUs/>}/>
+      <Route path='/products/:productId' element={<ProductDetail/>}/>
       </Routes>
     </div>
     </CartContext.Provider>
