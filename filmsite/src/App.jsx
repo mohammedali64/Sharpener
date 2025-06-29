@@ -5,26 +5,31 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [title,setTitle] = useState('');
-  const [openingText,setOpeningText] = useState('');
-  const [releaseDate,setReleaseDate] = useState('');
+  const [title, setTitle] = useState('');
+  const [openingText, setOpeningText] = useState('');
+  const [releaseDate, setReleaseDate] = useState('');
   const retryIntervalRef = useRef(null);
 
   async function fetchMovieHandler() {
     try {
-      const response = await fetch('https://swapi.dev/api/films/');
+      const response = await fetch(
+        'https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json'
+      );
       if (!response.ok) throw new Error('Fetch failed');
 
       const data = await response.json();
+      const loadedMovies = [];
 
-      const transformedMovies = data.results.map((movieData) => ({
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      }));
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
 
-      setMovies(transformedMovies);
+      setMovies(loadedMovies);
       setLoading(false);
       setError(null);
       clearInterval(retryIntervalRef.current);
@@ -36,12 +41,10 @@ function App() {
 
   useEffect(() => {
     fetchMovieHandler();
-
     retryIntervalRef.current = setInterval(() => {
       fetchMovieHandler();
     }, 5000);
-
-    return () => clearInterval(retryIntervalRef.current); 
+    return () => clearInterval(retryIntervalRef.current);
   }, []);
 
   const cancelRetryHandler = () => {
@@ -49,82 +52,88 @@ function App() {
     setError('Retrying cancelled by user.');
   };
 
-  const submitHandler = (event)=>{
+  const submitHandler = async (event) => {
     event.preventDefault();
-    const newMovie = {
-      id: Math.random(),
-      title:title,
-      openingText:openingText,
-      releaseDate:releaseDate
+    if (!title || !openingText || !releaseDate) return;
+
+    const newMovie = { title, openingText, releaseDate };
+
+    await fetch(
+      'https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json',
+      {
+        method: 'POST',
+        body: JSON.stringify(newMovie),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-      console.log(newMovie);
-      const updatedMovies = [...movies,newMovie];
-      setMovies(updatedMovies);
-  }
+    );
+
+    fetchMovieHandler();
+    setTitle('');
+    setOpeningText('');
+    setReleaseDate('');
+  };
+
+  const handleDeleteMovie = async (id) => {
+    await fetch(
+      `https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/movies/${id}.json`,
+      { method: 'DELETE' }
+    );
+    setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== id));
+  };
 
   return (
-    <>
-    <div style={{width: '50%',display:'flex',justifyItems:'center',alignItems:'center', justifyContent:'center',alignContent:'center', marginLeft:'25%'}}>
-    <form
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '2rem',
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f5f5f5',
+      }}
+    >
+      <form
         onSubmit={submitHandler}
-        style={{ display: 'flex', flexDirection: 'column',width: '100%', justifyItems:'center',alignItems:'center',backgroundColor:'gray' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1rem',
+          backgroundColor: '#fff',
+          padding: '2rem',
+          borderRadius: '10px',
+          boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '500px',
+        }}
       >
-        <label style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-          Title
-        </label>
+        <h2 style={{ textAlign: 'center' }}>Add Movie</h2>
+
+        <label style={{ fontWeight: 'bold' }}>Title</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            fontSize: '1rem',
-          }}
+          style={inputStyle}
         />
 
-        <label
-          style={{
-            fontWeight: 'bold',
-            marginTop: '1rem',
-            marginBottom: '0.5rem',
-          }}
-        >
-          Opening Text
-        </label>
+        <label style={{ fontWeight: 'bold' }}>Opening Text</label>
         <textarea
           rows="4"
           value={openingText}
           onChange={(e) => setOpeningText(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            fontSize: '1rem',
-            resize: 'vertical',
-          }}
+          style={{ ...inputStyle, resize: 'vertical' }}
         />
 
-        <label
-          style={{
-            fontWeight: 'bold',
-            marginTop: '1rem',
-            marginBottom: '0.5rem',
-          }}
-        >
-          Release Date
-        </label>
+        <label style={{ fontWeight: 'bold' }}>Release Date</label>
         <input
           type="date"
           value={releaseDate}
           onChange={(e) => setReleaseDate(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            fontSize: '1rem',
-          }}
+          style={inputStyle}
         />
 
         <button
@@ -136,34 +145,43 @@ function App() {
             fontSize: '1rem',
             border: 'none',
             borderRadius: '8px',
-            marginTop: '1.5rem',
             cursor: 'pointer',
           }}
         >
           Add Movie
         </button>
       </form>
+
+      <div style={{ marginTop: '3rem', width: '100%', maxWidth: '1000px' }}>
+        {loading && <h2 style={styles.centerText}>Loading...</h2>}
+
+        {error && (
+          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ color: 'red' }}>{error}</h2>
+            <button onClick={cancelRetryHandler} style={styles.button}>
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>Movies</h1>
+            <MovieList movies={movies} onDelete={handleDeleteMovie} />
+          </>
+        )}
       </div>
-    <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
-      {loading && <h1 style={styles.centerText}>Loading...</h1>}
-
-      {error && (
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ color: 'red' }}>{error}</h2>
-          <button onClick={cancelRetryHandler} style={styles.button}>Cancel</button>
-        </div>
-      )}
-
-      {!loading && !error && (
-        <>
-          <h1 style={{ textAlign: 'center', color: '#333' }}>Star Wars Movies</h1>
-          <MovieList movies={movies} />
-        </>
-      )}
     </div>
-    </>
   );
 }
+
+const inputStyle = {
+  padding: '0.5rem',
+  borderRadius: '6px',
+  border: '1px solid #ccc',
+  fontSize: '1rem',
+  width: '100%',
+};
 
 const styles = {
   centerText: {
@@ -176,8 +194,8 @@ const styles = {
     color: '#fff',
     border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 };
 
 export default App;
