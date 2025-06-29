@@ -1,14 +1,18 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import classes from './AuthForm.module.css';
 import { Button } from 'react-bootstrap';
+import { CartContext } from '../../Contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = () => {
   const API_KEY = 'AIzaSyCPyLCs84sAfKxwN-ld71RMaAFUsgRaHVA';
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const {setToken,setLoggedIn} = useContext(CartContext);
   const [isLogin, setIsLogin] = useState(true);
   const [login, setLogin] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -41,7 +45,7 @@ const AuthForm = () => {
       });
 
       const data = await res.json();
-      console.log(data.idToken);
+      setToken(data.idToken);
       setLogin(false);
 
       if (!res.ok) {
@@ -49,7 +53,9 @@ const AuthForm = () => {
       }
 
       console.log('Success:', data);
+      setLoggedIn(true);
       alert('Success!');
+      navigate('/');
 
     } catch (err) {
       setLogin(false);

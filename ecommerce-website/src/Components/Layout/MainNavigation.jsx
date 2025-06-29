@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import classes from './MainNavigation.module.css';
+import { CartContext } from '../../Contexts/CartContext';
 
 const MainNavigation = () => {
   return (
@@ -15,9 +16,6 @@ const MainNavigation = () => {
           </li>
           <li>
             <Link to='/profile'>Profile</Link>
-          </li>
-          <li>
-            <button>Logout</button>
           </li>
         </ul>
       </nav>

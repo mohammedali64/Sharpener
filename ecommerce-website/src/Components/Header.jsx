@@ -1,9 +1,16 @@
 import React, { useContext } from 'react';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { CartContext } from '../Contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const { setOpenCart,openCart,cartElements } = useContext(CartContext);
+  const navigate = useNavigate();
+  const { setOpenCart,openCart,cartElements,setToken,setLoggedIn } = useContext(CartContext);
+  const handleLogout = ()=>{
+    setToken(null);
+    setLoggedIn(false);
+    navigate('/auth');
+  }
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -19,7 +26,7 @@ const Header = () => {
           <Button variant="outline-info" onClick={() => setOpenCart(!openCart)}>
             Cart <sup>{cartElements.length}</sup>
           </Button>
-          <Nav.Link href='/auth'><Button>Login</Button></Nav.Link>
+          <Button onClick={()=> handleLogout()}>Logout</Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>

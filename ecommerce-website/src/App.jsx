@@ -20,6 +20,7 @@ function App() {
   const[cartElements,setCartElements] = useState([]);
   const [total,setTotal] = useState("");
   const [loggedIn,setLoggedIn] = useState(false);
+  const [token,setToken]= useState('');
 
   const productsArr = [
   {
@@ -48,7 +49,7 @@ function App() {
   }
 ];
   return (
-    <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal,userDataDb}}>
+    <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal,userDataDb,token,setToken,loggedIn,setLoggedIn}}>
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       {!loggedIn &&<Layout/>}
       {loggedIn && <Header setOpenCart={setOpenCart} openCart={openCart} />}
@@ -57,7 +58,7 @@ function App() {
       <Route path='/' element={<Home/>}/>
       
       <Route path='/home' element={<HomePage/>}/>
-      <Route path='/auth' element={<AuthPage/>}/>
+      {!loggedIn &&<Route path='/auth' element={<AuthPage/>}/>}
       <Route path='/profile' element={<ProfilePage/>}/>
       <Route path='/products' element = {<Products />}/>
       <Route path='/about' element={<About/>}/>
