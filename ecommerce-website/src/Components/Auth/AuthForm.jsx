@@ -1,18 +1,18 @@
 import { useContext, useRef, useState } from 'react';
 import classes from './AuthForm.module.css';
 import { Button } from 'react-bootstrap';
-import { CartContext } from '../../Contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../Contexts/auth-context';
 
 const AuthForm = () => {
   const API_KEY = 'AIzaSyCPyLCs84sAfKxwN-ld71RMaAFUsgRaHVA';
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  const {setToken,setLoggedIn} = useContext(CartContext);
   const [isLogin, setIsLogin] = useState(true);
-  const [login, setLogin] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -21,8 +21,8 @@ const AuthForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setLogin(true);
     setErrorMsg('');
+    setIsLoading(true);
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
@@ -45,21 +45,18 @@ const AuthForm = () => {
       });
 
       const data = await res.json();
-      setToken(data.idToken);
-      setLogin(false);
+      setIsLoading(false);
 
       if (!res.ok) {
         throw new Error(data.error.message || 'Authentication failed!');
       }
 
-      console.log('Success:', data);
-      setLoggedIn(true);
-      alert('Success!');
+      authCtx.login(data.idToken);
       navigate('/');
 
     } catch (err) {
-      setLogin(false);
-      alert(err.message);
+      setIsLoading(false);
+      setErrorMsg(err.message);
     }
   };
 
@@ -81,9 +78,10 @@ const AuthForm = () => {
             required
           />
         </div>
-        <div>
-          <Button type='submit'>{isLogin ? 'Login' : 'Sign Up'}</Button>
-          {login && <p className='fw-bold text-white mt-2'>Sending Request...</p>}
+        <div className="mt-3">
+          <Button type='submit' disabled={isLoading}>
+            {isLoading ? 'Sending Request...' : isLogin ? 'Login' : 'Sign Up'}
+          </Button>
           {errorMsg && <p className='text-danger mt-2'>{errorMsg}</p>}
         </div>
         <div className={classes.actions}>
