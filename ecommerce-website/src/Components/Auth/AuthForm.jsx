@@ -41,6 +41,7 @@ const AuthForm = () => {
       });
 
       const data = await res.json();
+      console.log(data.idToken);
       setLogin(false);
 
       if (!res.ok) {
