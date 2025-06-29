@@ -19,6 +19,7 @@ const Header = () => {
           <Button variant="outline-info" onClick={() => setOpenCart(!openCart)}>
             Cart <sup>{cartElements.length}</sup>
           </Button>
+          <Nav.Link href='/auth'><Button>Login</Button></Nav.Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>

@@ -9,12 +9,17 @@ import About from './Components/About';
 import Home from './Components/Home';
 import ContactUs from './Components/ContactUs';
 import ProductDetail from './Components/ProductDetail';
+import AuthPage from './pages/AuthPage';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import Layout from './Components/Layout/Layout';
 
 function App() {
   const userDataDb = 'https://movies-flix-c8ce1-default-rtdb.asia-southeast1.firebasedatabase.app/userData.json';
   const [openCart, setOpenCart] = useState(false);
   const[cartElements,setCartElements] = useState([]);
   const [total,setTotal] = useState("");
+  const [loggedIn,setLoggedIn] = useState(false);
 
   const productsArr = [
   {
@@ -45,10 +50,15 @@ function App() {
   return (
     <CartContext.Provider value={{productsArr,cartElements,setCartElements,openCart,setOpenCart,total,setTotal,userDataDb}}>
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      <Header setOpenCart={setOpenCart} openCart={openCart} />
+      {!loggedIn &&<Layout/>}
+      {loggedIn && <Header setOpenCart={setOpenCart} openCart={openCart} />}
       <Cart openCart={openCart} setOpenCart={setOpenCart} />
       <Routes>
       <Route path='/' element={<Home/>}/>
+      
+      <Route path='/home' element={<HomePage/>}/>
+      <Route path='/auth' element={<AuthPage/>}/>
+      <Route path='/profile' element={<ProfilePage/>}/>
       <Route path='/products' element = {<Products />}/>
       <Route path='/about' element={<About/>}/>
       <Route path='/contactus' element={<ContactUs/>}/>
