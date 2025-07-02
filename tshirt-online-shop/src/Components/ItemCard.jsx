@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { TshirtContext } from '../Context/TshirtContext';
+import CartHook from '../Hooks/CartHook';
 
 const ItemCard = (props) => {
   const [value, setValue] = useState('');
@@ -31,8 +32,11 @@ const ItemCard = (props) => {
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
+      console.log(updatedCart);
       setCartItems(updatedCart);
     } else {
+      console.log(newCart);
+      CartHook(newCart);
       setCartItems([...cartItems, newCart]);
     }
 

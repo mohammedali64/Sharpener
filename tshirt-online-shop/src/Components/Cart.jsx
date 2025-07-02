@@ -19,7 +19,6 @@ const Cart = () => {
     setCartItems([]);
     setCart(false)
   }
-  console.log(tshirts);
   if (!cart) return null;
 
   return (

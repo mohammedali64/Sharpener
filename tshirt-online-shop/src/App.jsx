@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css'
 import Header from './Components/Header'
 import Home from './Components/Home'
 import { TshirtContext } from './Context/TshirtContext';
 import Cart from './Components/Cart';
+import RetriveCartHook from './Hooks/RetriveCartHook';
 
-function App() {
+function App(){
     const [cartItems,setCartItems] = useState([]);
     const [cart,setCart] = useState(false);
+    useEffect(() => {
+    const fetchCart = async () => {
+      const data = await RetriveCartHook();
+      console.log(data);
+      setCartItems(data);
+    };
+
+    fetchCart();
+  }, []);
 
   const [tshirts, setTshirts] = useState([
   { id: 1, name: 'T-Shirt 1', description: "100% cotton", price: 10, L: 50, M: 10, S: 20 },

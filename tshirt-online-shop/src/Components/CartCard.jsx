@@ -12,15 +12,25 @@ const CartCard = ({ item }) => {
     );
     setCartItems(updatedItems);
   };
+  const handleDecrement = async() => {
+    const currentItem = cartItems.find((cartItem)=>{
+      return cartItem.id === item.id && cartItem.size === item.size
+    })
+    if(currentItem.quantity === 1){
+      const crudUrl = `https://crudcrud.com/api/fa93ec610abd45eea8098c80a0b9f5d4/cart/${currentItem._id}`;
+      await fetch(crudUrl, {
+        method: 'DELETE',
+      });
+    }
 
-  const handleDecrement = () => {
     const updatedItems = cartItems
       .map((cartItem) =>
         cartItem.id === item.id && cartItem.size === item.size
-          ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          ? { ...cartItem, quantity: cartItem.quantity - 1,}
           : cartItem
       )
       .filter((item) => item.quantity > 0);
+      console.log(updatedItems);
     setCartItems(updatedItems);
   };
 
