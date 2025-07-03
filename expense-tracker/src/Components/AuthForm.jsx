@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { firebaseApiKey } from '../Api keys/signup';
+import { firebaseApiKey } from '../Api keys/signup.env';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = () => {
     const [isLogin,setIsLogin] = useState(true);
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [confirmPassword,setConfirmPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async(event)=>{
         event.preventDefault();
@@ -29,7 +31,9 @@ const AuthForm = () => {
                     alert(response.error.message);
                     return;
                 }
+                localStorage.setItem('token',response.idToken);
                 alert('Login Successful');
+                navigate('/');
             }catch(err){
                 console.log(err);
                 alert(err);
@@ -58,9 +62,12 @@ const AuthForm = () => {
                 console.log(response);
                 if(response.error){
                     alert(response.error.message);
+                    return;
                 }
                 alert('Registered Successfully');
                 setIsLogin(true);
+                localStorage.setItem('token',response.idToken);
+                navigate("/");
             }catch(error){
                 console.log(error.message);
             }
@@ -71,8 +78,8 @@ const AuthForm = () => {
     }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-md shadow-md w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-gray-600">
+      <div className="bg-white p-6 rounded-md shadow-2xl w-full max-w-sm">
         <h2 className="text-2xl font-semibold text-center mb-6">
           {isLogin ? "Login" : "SignUp"}
         </h2>
@@ -81,7 +88,7 @@ const AuthForm = () => {
             type="email"
             name="email"
             placeholder="Email"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 border rounded-3xl bg-black text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
             required
@@ -90,7 +97,7 @@ const AuthForm = () => {
             type="password"
             name="password"
             placeholder="Password"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-4 py-2 border rounded-3xl bg-black text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={password}
             onChange={(e)=>setPassword(e.target.value)}
             required
@@ -100,7 +107,7 @@ const AuthForm = () => {
               type="password"
               name="confirmPassword"
               placeholder="Confirm Password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border rounded-3xl bg-black text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={confirmPassword}
               onChange={(e)=>setConfirmPassword(e.target.value)}
               required
