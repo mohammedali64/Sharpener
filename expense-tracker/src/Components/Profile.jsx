@@ -60,15 +60,19 @@ const Profile = () => {
             console.error(error);
         }
     }
+    const handleLogout = ()=>{
+        localStorage.removeItem('token');
+        navigate("/auth");
+    }
   return (
     <div>
       <div className='flex grid-cols-2 justify-between py-3 border-b-gray-600 border-b-2'>
         <div>
             Winners never quit.Quitters never win.
         </div>
-        <div className='bg-purple-300 px-3 rounded-3xl'>
-            Your profile is 64% complete. Complete your profile now.
-        </div>
+        <button className='bg-purple-300 px-3 rounded-3xl cursor-pointer' type='button' onClick={handleLogout}>
+            Logout
+        </button>
       </div>
       <div className='w-screen mt-10 border-b-[1px] pb-5 flex justify-center items-center'>
         <form onSubmit={handleUpdate}>
