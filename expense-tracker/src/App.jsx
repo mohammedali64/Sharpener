@@ -4,6 +4,7 @@ import Home from './Components/Home';
 import Profile from './Components/Profile';
 import PrivateRoute from './Components/PrivateRoute';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ForgotPassword from './Components/ForgotPassword';
 
 function App() {
   return (
@@ -24,6 +25,12 @@ function App() {
             <PrivateRoute>
               <Profile />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/forgotPassword"
+          element={
+              <ForgotPassword />
           }
         />
       </Routes>

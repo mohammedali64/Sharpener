@@ -76,6 +76,9 @@ const AuthForm = () => {
             setConfirmPassword('');
         }
     }
+    const handleForgotPassword = ()=>{
+        navigate("/forgotPassword");
+    }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-600">
@@ -120,6 +123,9 @@ const AuthForm = () => {
             {isLogin ? "Login" : "Sign up"}
           </button>
         </form>
+        <div className='flex justify-center items-center pt-1'>
+            <button className='cursor-pointer' type='button' onClick={handleForgotPassword}>Forgot Password</button>
+        </div>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             {isLogin ? "Don't have an account?" : "Have an account?"}{" "}
