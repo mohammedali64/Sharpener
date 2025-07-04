@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExpenseCard from './ExpenseCard';
+import { getExpenses } from '../Hooks/GetExpenses';
 
 const AddExpense = () => {
   const [expenses, setExpenses] = useState([]);
@@ -7,21 +8,43 @@ const AddExpense = () => {
   const [desc, setDesc] = useState('');
   const [category, setCategory] = useState('');
 
-  const handleExpenses = (event) => {
+  useEffect(() => {
+    const fetchExpenses = async () => {
+        const data = await getExpenses();
+        setExpenses(data);
+    };
+    fetchExpenses();
+  }, []);
+
+
+  const handleExpenses = async(event) => {
     event.preventDefault();
-    if (category.length <= 0) {
+    try{
+        if (category.length <= 0) {
       alert('Select the Category');
       return;
+        }
+        const newExpense = {
+        money: money,
+        desc: desc,
+        category: category,
+        };
+        await fetch(`https://expense-tracker-6ddd2-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newExpense),
+        })
+        const updatedExpenses = await getExpenses();
+        setExpenses(updatedExpenses);
+
+        setMoney('');
+        setDesc('');
+        setCategory('');
+    }catch(error){
+        console.error(error);
     }
-    const newExpense = {
-      money: money,
-      desc: desc,
-      category: category,
-    };
-    setExpenses([...expenses, newExpense]);
-    setMoney('');
-    setDesc('');
-    setCategory('');
   };
 
   return (
@@ -76,7 +99,6 @@ const AddExpense = () => {
         </form>
       </div>
 
-      {/* Scrollable expense list */}
       <div className="mt-10 w-full max-w-md overflow-y-auto max-h-[300px] px-2">
         {expenses.length > 0 ? (
           expenses.map((expense, index) => (
