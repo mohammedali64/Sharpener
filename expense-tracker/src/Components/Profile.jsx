@@ -40,6 +40,26 @@ const Profile = () => {
             alert(error);
         }
     }
+
+    const handleVerification = async()=>{
+        try{
+            console.log("success");
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${firebaseApiKey}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idToken: localStorage.getItem('token'),
+                    requestType:"VERIFY_EMAIL",
+                })
+            })
+            const data = await response.json();
+            console.log(data);
+        }catch(error){
+            console.error(error);
+        }
+    }
   return (
     <div>
       <div className='flex grid-cols-2 justify-between py-3 border-b-gray-600 border-b-2'>
@@ -66,9 +86,12 @@ const Profile = () => {
                 <input onChange={(e)=>setUrl(e.target.value)} type='url' required id='photoUrl' name='photoUrl' className='border-2 rounded-md' value={url}/>
             </div>
         </div>
-        <div>
+        <div className='flex flex-row'>
             <div>
-                <button className='border-[1px] px-2 rounded-lg bg-red-300' type='submit'>Update</button>
+                <button className='border-[1px] px-2 rounded-lg bg-red-300 mr-5' type='submit'>Update</button>
+            </div>
+            <div>
+                <button className='border-[1px] px-2 rounded-lg bg-red-300' type='button' onClick={handleVerification}>Verfy Email</button>
             </div>
         </div>
         </form>
