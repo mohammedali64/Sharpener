@@ -5,6 +5,7 @@ import Profile from './Components/Profile';
 import PrivateRoute from './Components/PrivateRoute';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ForgotPassword from './Components/ForgotPassword';
+import AddExpense from './Components/AddExpense';
 
 function App() {
   return (
@@ -33,7 +34,16 @@ function App() {
               <ForgotPassword />
           }
         />
+        <Route
+          path="/newExpense"
+          element={
+            <PrivateRoute>
+              <AddExpense />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      
   );
 }
 
