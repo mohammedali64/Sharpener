@@ -47,6 +47,23 @@ const AddExpense = () => {
     }
   };
 
+  const handleUpdate = (expense)=>{
+    setMoney(expense.money);
+    setCategory(expense.category);
+    setDesc(expense.desc);
+    handleDelete(expense.id);
+  }
+
+  const handleDelete = async(id)=>{
+        console.log(id);
+        await fetch(`https://expense-tracker-6ddd2-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${id}.json`,{
+            method: 'DELETE',
+        })
+        const updatedExpenses = expenses.filter((item)=> id !== item.id);
+        setExpenses(updatedExpenses);
+    }
+
+
   return (
     <div className="flex flex-col items-center bg-amber-100 min-h-screen py-10 px-5">
       <div className="text-4xl font-bold text-center">Track Your Expenses</div>
@@ -102,7 +119,7 @@ const AddExpense = () => {
       <div className="mt-10 w-full max-w-md overflow-y-auto max-h-[300px] px-2">
         {expenses.length > 0 ? (
           expenses.map((expense, index) => (
-            <ExpenseCard key={index} expense={expense} />
+            <ExpenseCard key={index} expense={expense} handleDelete = {handleDelete} handleUpdate = {handleUpdate}/>
           ))
         ) : (
           <p className="text-gray-500 text-center">No expenses added yet.</p>
