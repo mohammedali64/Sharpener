@@ -3,6 +3,7 @@ import ExpenseCard from './ExpenseCard';
 import { getExpenses } from '../Hooks/GetExpenses';
 import { setExpenses,addExpense } from '../Store/expenseSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { changeTheme,removeTheme } from '../Store/themeSlice';
 
 const AddExpense = () => {
   const [expenses, setExpense] = useState([]);
@@ -12,6 +13,7 @@ const AddExpense = () => {
   const dispatch = useDispatch();
 
   const premium = useSelector((state)=>state.expenses.isPremium);
+  const themeColor = useSelector((state)=>state.theme.themeBackground);
   console.log(premium);
 
   useEffect(() => {
@@ -22,6 +24,15 @@ const AddExpense = () => {
     };
     fetchExpenses();
   }, []);
+
+  useEffect(()=>{
+    if(premium){
+      dispatch(changeTheme({theme:"dark",themeBackground:"gray"}));
+    }else{
+      dispatch(removeTheme());
+    }
+  },[premium]);
+
 
 
   const handleExpenses = async(event) => {
@@ -72,9 +83,29 @@ const AddExpense = () => {
         dispatch(setExpenses(updatedExpenses));
     }
 
+    const handleDownload = () => {
+  if (expenses.length === 0) return;
+
+  const csv = [
+    ['Money', 'Description', 'Category'],
+    ...expenses.map(exp => [exp.money, exp.desc, exp.category])
+  ]
+    .map(row => row.join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'expenses.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
 
   return (
-    <div className="flex flex-col items-center bg-amber-100 min-h-screen py-10 px-5">
+    <div className="flex flex-col items-center min-h-screen py-10 px-5" style={{backgroundColor:themeColor}}>
       <div className="text-4xl font-bold text-center">Track Your Expenses</div>
 
       <div className="mt-10 w-full max-w-md shadow-2xl rounded-2xl bg-amber-200 py-10 px-6">
@@ -122,8 +153,8 @@ const AddExpense = () => {
           >
             Submit
           </button>
-          {premium && <button className='bg-green-400 w-[50%] py-2 rounded-3xl'>Enable Premium</button>}
         </form>
+        {premium && <button className='bg-green-400 w-[50%] py-2 rounded-3xl mt-4' type='button' onClick={handleDownload}>Download Expenses</button>}
       </div>
 
       <div className="mt-10 w-full max-w-md overflow-y-auto max-h-[300px] px-2">
