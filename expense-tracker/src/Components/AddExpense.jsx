@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import ExpenseCard from './ExpenseCard';
 import { getExpenses } from '../Hooks/GetExpenses';
+import { setExpenses,addExpense } from '../Store/expenseSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AddExpense = () => {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpense] = useState([]);
   const [money, setMoney] = useState('');
   const [desc, setDesc] = useState('');
   const [category, setCategory] = useState('');
+  const dispatch = useDispatch();
+
+  const premium = useSelector((state)=>state.expenses.isPremium);
+  console.log(premium);
 
   useEffect(() => {
     const fetchExpenses = async () => {
         const data = await getExpenses();
-        setExpenses(data);
+        setExpense(data);
+        dispatch(setExpenses(data));
     };
     fetchExpenses();
   }, []);
@@ -37,7 +44,8 @@ const AddExpense = () => {
             body: JSON.stringify(newExpense),
         })
         const updatedExpenses = await getExpenses();
-        setExpenses(updatedExpenses);
+        setExpense(updatedExpenses);
+        dispatch(addExpense(newExpense));
 
         setMoney('');
         setDesc('');
@@ -60,7 +68,8 @@ const AddExpense = () => {
             method: 'DELETE',
         })
         const updatedExpenses = expenses.filter((item)=> id !== item.id);
-        setExpenses(updatedExpenses);
+        setExpense(updatedExpenses);
+        dispatch(setExpenses(updatedExpenses));
     }
 
 
@@ -113,6 +122,7 @@ const AddExpense = () => {
           >
             Submit
           </button>
+          {premium && <button className='bg-green-400 w-[50%] py-2 rounded-3xl'>Enable Premium</button>}
         </form>
       </div>
 

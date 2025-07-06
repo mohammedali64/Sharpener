@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { firebaseApiKey } from '../Api keys/signup.env';
 import { useNavigate } from 'react-router-dom';
 import GetData from '../Hooks/GetData';
+import { useDispatch } from 'react-redux';
+import { logout } from '../Store/authSlice';
+import { setExpenses } from '../Store/expenseSlice';
 
 const Profile = () => {
     const navigate = useNavigate();
     const [name,setName] = useState('');
     const [url,setUrl] = useState('');
+
+    const dispatch = useDispatch();
     
     useEffect(() => {
     const fetchUserData = async () => {
       const data = await GetData();
+      console.log(data);
       setName(data?.displayName || '');
       setUrl(data?.photoUrl || '');
     };
@@ -62,6 +68,10 @@ const Profile = () => {
     }
     const handleLogout = ()=>{
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('isLoggedIn');
+        dispatch(logout())
+        dispatch(setExpenses({expenses:[]}));
         navigate("/auth");
     }
   return (

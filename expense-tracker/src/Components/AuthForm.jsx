@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { firebaseApiKey } from '../Api keys/signup.env';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../Store/authSlice';
 
 const AuthForm = () => {
     const [isLogin,setIsLogin] = useState(true);
@@ -8,6 +10,8 @@ const AuthForm = () => {
     const [password,setPassword] = useState('');
     const [confirmPassword,setConfirmPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
 
     const handleSubmit = async(event)=>{
         event.preventDefault();
@@ -31,7 +35,11 @@ const AuthForm = () => {
                     alert(response.error.message);
                     return;
                 }
+                console.log(response);
                 localStorage.setItem('token',response.idToken);
+                localStorage.setItem('userId',response.localId);
+                localStorage.setItem('isLoggedIn',true);
+                dispatch(login({isLoggedIn:false,token:response.idToken,userId:response.localId}));
                 alert('Login Successful');
                 navigate('/');
             }catch(err){
