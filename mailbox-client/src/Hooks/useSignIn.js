@@ -13,11 +13,11 @@ const useSignIn = () => {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       throw new Error(data.error.message);
     }
     localStorage.setItem('token',data.idToken);
+    localStorage.setItem('email',data.email);
     return data;
   };
 
