@@ -13,7 +13,6 @@ const AuthForm = () => {
   const [error,setError] = useState('');
   const {login} = useSignIn();
   const {signUp} = useSignUp();
-  const navigate = useNavigate();
 
   const handleLoginSubmit = async (e) => {
   e.preventDefault();
@@ -21,7 +20,6 @@ const AuthForm = () => {
         const result = await login(loginEmail, loginPassword);
         console.log('Login successful:', result);
         setError('');
-        navigate('/');
     } catch (error) {
         setError(error.message);
         setTimeout(() => setError(''), 3000);
@@ -38,7 +36,6 @@ const AuthForm = () => {
         const result = await signUp(signupEmail,signupPassword);
         console.log('Login successful:', result);
         setError('');
-        navigate('/');
         
     }catch(error){
         setError(error.message);

@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { firebase_api_key } from '../../Api_Keys/firebaseApi';
 
 const useSignIn = () => {
+  const navigate = useNavigate();
   const login = async (email, password) => {
     const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebase_api_key}`, {
       method: "POST",
@@ -18,6 +20,7 @@ const useSignIn = () => {
     }
     localStorage.setItem('token',data.idToken);
     localStorage.setItem('email',data.email);
+    navigate('/');
     return data;
   };
 
