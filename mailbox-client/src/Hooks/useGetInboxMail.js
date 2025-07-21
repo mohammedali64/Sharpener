@@ -25,7 +25,6 @@ const useGetInboxMail = () => {
 
     getmail();
   }, []);
-  console.log(inboxMails);
   return inboxMails;
 };
 
