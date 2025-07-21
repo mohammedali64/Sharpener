@@ -1,29 +1,22 @@
-import React from 'react'
-import { firebase_api_key } from '../../Api_Keys/firebaseApi'
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const useSignUp = () => {
-    const navigate = useNavigate();
-    const signUp = async (email, password) => {
-    const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebase_api_key}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, returnSecureToken: true }),
-      }
-    );
-    const data = await response.json();
-    if(!response.ok){
-        throw new Error(data.error.message);
+  const navigate = useNavigate();
+
+  const signUp = async (email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      navigate("/");
+      localStorage.setItem('email',email);
+      return userCredential;
+    } catch (error) {
+      throw new Error(error.message);
     }
-    localStorage.setItem('token',data.idToken);
-    localStorage.setItem('email',data.email);
-    navigate("/");
-    return data;
   };
 
   return { signUp };
-}
+};
 
-export default useSignUp
+export default useSignUp;

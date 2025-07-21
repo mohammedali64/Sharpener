@@ -1,101 +1,104 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { formatDate } from '../Helper Function/FormatDate';
 
-const MailCompose = () => {
+const MailCompose = ({ user }) => {
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  const dummyRecipients = ['john.doe@example.com', 'jane.smith@example.com', 'team.lead@example.com'];
 
-  const encodeEmail = email => email.replace('.', '_');
+  const encodeEmail = (email) => email.replace('.', '_');
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Email:', { to, subject, body });
-    const sender = encodeEmail(localStorage.getItem('email'));
+    const sender = encodeEmail(user.email);
     const toEmail = encodeEmail(to);
-    if(sender === toEmail){
-        alert("You can't send email to yourself");
-        return;
+    if (sender === toEmail) {
+      alert("You can't send email to yourself");
+      return;
     }
     const mailData = {
-        from: sender,
-        to: toEmail,
-        subject: subject,
-        body: body,
-        timeStamp: Date.now()
+      from: sender,
+      to: toEmail,
+      subject,
+      body,
+      timeStamp: formatDate(Date.now()),
     };
 
-    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${toEmail}.json`, {
-        method: "POST",
-        body: JSON.stringify(mailData)
+    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${toEmail}/received.json`, {
+      method: 'POST',
+      body: JSON.stringify(mailData),
     });
 
-    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}.json`, {
-        method: "POST",
-        body: JSON.stringify(mailData)
+    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}/sent.json`, {
+      method: 'POST',
+      body: JSON.stringify(mailData),
     });
+    alert('Email sent successfully!');
+    setTo('');
+    setSubject('');
+    setBody('');
   };
 
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, false] }],
+      [{ header: [1, 2, false] }],
       ['bold', 'italic', 'underline', 'link'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
     ],
   };
 
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'link',
-    'list', 'bullet',
-  ];
+  const formats = ['header', 'bold', 'italic', 'underline', 'link', 'list', 'bullet'];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-100 via-gray-50 to-white p-6">
-      <div className="w-full max-w-xl bg-white/80 backdrop-blur-md rounded-xl shadow-xl p-6 border border-gray-100/50 transition-all duration-300">
+    <div className="p-4 h-full flex items-center justify-center bg-gradient-to-br from-indigo-100 via-blue-50 to-gray-100">
+      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-gray-200 h-full overflow-y-auto">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Compose Email</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="border-b border-gray-200 pb-3">
-            <label className="block text-sm font-medium text-gray-700">To</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
             <input
               type="email"
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              className="w-full p-3 border-b-2 border-transparent focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/50 bg-gray-50/50 rounded-md text-gray-800 placeholder-gray-500 transition-all duration-300"
-              placeholder="Recipients"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+              placeholder="Enter recipient email (e.g., john.doe@example.com)"
+              list="recipients"
               required
             />
+            <datalist id="recipients">
+              {dummyRecipients.map((email) => (
+                <option key={email} value={email} />
+              ))}
+            </datalist>
           </div>
-
-          <div className="border-b border-gray-200 pb-3">
-            <label className="block text-sm font-medium text-gray-700">Subject</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
             <input
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full p-3 border-b-2 border-transparent focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/50 bg-gray-50/50 rounded-md text-gray-800 placeholder-gray-500 transition-all duration-300"
-              placeholder="Subject"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+              placeholder="Enter subject"
             />
           </div>
-
-          <div className="min-h-[350px]">
+          <div className="min-h-[300px]">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Body</label>
             <ReactQuill
               value={body}
               onChange={setBody}
               modules={modules}
               formats={formats}
-              className="h-full bg-gray-50/50 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none transition-all duration-300"
+              className="h-[calc(100vh-20rem)] bg-gray-50 border border-gray-300 rounded-lg text-gray-800 focus:outline-none transition-all duration-300"
               placeholder="Write your email here..."
             />
           </div>
-
-          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-            <div className="flex space-x-2">
-              {/* Toolbar buttons are now handled by ReactQuill */}
-            </div>
+          <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 transition-all duration-300"
+              className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:from-indigo-700 hover:to-blue-600 transition-all duration-300"
             >
               Send
             </button>

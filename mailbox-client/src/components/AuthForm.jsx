@@ -1,45 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import useSignIn from '../Hooks/useSignIn';
 import useSignUp from '../Hooks/useSignUp';
-import { useNavigate } from 'react-router-dom';
 
 const AuthForm = () => {
-    const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error,setError] = useState('');
-  const {login} = useSignIn();
-  const {signUp} = useSignUp();
+  const [error, setError] = useState('');
+  const { login } = useSignIn();
+  const { signUp } = useSignUp();
 
   const handleLoginSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
     try {
-        const result = await login(loginEmail, loginPassword);
-        console.log('Login successful:', result);
-        setError('');
+      const result = await login(loginEmail, loginPassword);
+      console.log('Login successful:', result);
+      setError('');
     } catch (error) {
-        setError(error.message);
-        setTimeout(() => setError(''), 3000);
+      setError(error.message);
+      setTimeout(() => setError(''), 3000);
     }
   };
 
-  const handleSignupSubmit = async(e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault();
-    try{
-        if (signupPassword !== confirmPassword) {
-            alert("Passwords don't match!");
-            return;
-        }
-        const result = await signUp(signupEmail,signupPassword);
-        console.log('Login successful:', result);
-        setError('');
-        
-    }catch(error){
-        setError(error.message);
-        setTimeout(() => setError(''), 3000);
+    try {
+      if (signupPassword !== confirmPassword) {
+        alert("Passwords don't match!");
+        return;
+      }
+      const result = await signUp(signupEmail, signupPassword);
+      console.log('Signup successful:', result);
+      setError('');
+    } catch (error) {
+      setError(error.message);
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -50,17 +48,13 @@ const AuthForm = () => {
           <div className="bg-white/20 rounded-full p-1 flex gap-2">
             <button
               onClick={() => setIsLogin(true)}
-              className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 ${
-                isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-white'
-              }`}
+              className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 ${isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-white'}`}
             >
               Login
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 ${
-                !isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-white'
-              }`}
+              className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 ${!isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-white'}`}
             >
               Signup
             </button>
@@ -95,9 +89,9 @@ const AuthForm = () => {
                   />
                 </div>
                 {error && (
-                    <div className="text-red-500 text-sm font-medium text-center">
-                        {error}
-                    </div>
+                  <div className="text-red-500 text-sm font-medium text-center">
+                    {error}
+                  </div>
                 )}
                 <button
                   type="submit"
@@ -145,9 +139,9 @@ const AuthForm = () => {
                   />
                 </div>
                 {error && (
-                    <div className="text-red-500 text-sm font-medium text-center">
-                        {error}
-                    </div>
+                  <div className="text-red-500 text-sm font-medium text-center">
+                    {error}
+                  </div>
                 )}
                 <button
                   type="submit"
@@ -161,7 +155,7 @@ const AuthForm = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;
