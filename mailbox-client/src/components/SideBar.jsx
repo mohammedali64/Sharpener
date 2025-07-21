@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { useSelector } from 'react-redux';
 import useGetInboxMail from '../Hooks/useGetInboxMail';
-import Inbox from './Inbox';
+import useGetSentMails from '../Hooks/useGetSentMails';
 
 const SideBar = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname.split('/')[1] || 'inbox');
   const InboxMails = useGetInboxMail();
+  const sentMails = useGetSentMails();
 
   const handleLogout = async () => {
     try {
@@ -48,7 +50,7 @@ const SideBar = ({ user }) => {
             } transition-all duration-300`}
           >
             <span className="font-semibold">Sent</span>
-            <span className="ml-2 text-sm bg-green-200 text-indigo-800 px-2 rounded-full">3</span>
+            <span className="ml-2 text-sm bg-green-200 text-indigo-800 px-2 rounded-full">{sentMails.length}</span>
           </button>
           <button
             onClick={() => handleNavigate('/compose')}

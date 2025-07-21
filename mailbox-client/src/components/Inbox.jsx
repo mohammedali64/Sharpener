@@ -23,7 +23,7 @@ const Inbox = () => {
     setSelectedEmail(email);
     setOpen(true);
     dispatch(markMailAsRead(email.id)); 
-    
+    if(email.read === true) return;
     const data = await readChecker(email);
     console.log(data);
   };
@@ -74,7 +74,7 @@ const Inbox = () => {
           </div>
         ))}
       </div>
-      {open && <EmailPopup email={selectedEmail} onClose={handleClosePopup} />}
+      {open && <EmailPopup email={selectedEmail} onClose={handleClosePopup} toggle = {true}/>}
     </div>
   );
 };

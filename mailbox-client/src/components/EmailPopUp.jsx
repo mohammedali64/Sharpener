@@ -1,7 +1,8 @@
 import React from 'react';
 
-const EmailPopup = ({ email, onClose }) => {
+const EmailPopup = ({ email, onClose, toggle }) => {
   if (!email) return null;
+  console.log(toggle);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -10,10 +11,14 @@ const EmailPopup = ({ email, onClose }) => {
           <h3 className="text-xl font-bold">Email Details</h3>
         </div>
         <div className="space-y-4">
-          <div>
+          {toggle?<div>
             <label className="block text-sm font-medium text-gray-700">From:</label>
             <p className="text-lg font-semibold text-gray-800">{email.from}</p>
-          </div>
+          </div>:
+          <div>
+            <label className="block text-sm font-medium text-gray-700">To:</label>
+            <p className="text-lg font-semibold text-gray-800">{email.to}</p>
+          </div>}
           <div>
             <label className="block text-sm font-medium text-gray-700">Subject:</label>
             <p className="text-lg font-semibold text-gray-800">{email.subject}</p>
