@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { formatDate } from '../Helper Function/FormatDate';
+import AddID from '../Helper Function/AddID';
 
 const MailCompose = ({ user }) => {
   const [to, setTo] = useState('');
@@ -24,18 +25,24 @@ const MailCompose = ({ user }) => {
       to: toEmail,
       subject,
       body,
+      read: false,
       timeStamp: formatDate(Date.now()),
     };
 
-    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${toEmail}/received.json`, {
+    const receivedMailData = await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${toEmail}/received.json`, {
       method: 'POST',
       body: JSON.stringify(mailData),
     });
 
-    await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}/sent.json`, {
+    const sentMailData = await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}/sent.json`, {
       method: 'POST',
       body: JSON.stringify(mailData),
     });
+    const receivedData = await receivedMailData.json();
+    console.log(toEmail);
+    await AddID(receivedData.name,toEmail,mailData);
+    console.log(receivedData.name);
+
     alert('Email sent successfully!');
     setTo('');
     setSubject('');

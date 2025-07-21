@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useGetInboxMail from '../Hooks/useGetInboxMail';
+import EmailPopup from './EmailPopUp';
+import readChecker from '../Helper Function/readChecker';
 
 const Inbox = () => {
- const mails = useGetInboxMail();
- console.log(mails);
+  const mails = useGetInboxMail();
+  const [open, setOpen] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState(null);
+  console.log(mails);
 
+  const handleEmailOpen = async(email) => {
+    setSelectedEmail(email);
+    setOpen(true);
+
+    const data = await readChecker(email);
+  };
+
+  const handleClosePopup = () => {
+    setOpen(false);
+    setSelectedEmail(null);
+  };
 
   return (
     <div className="p-4 h-full">
@@ -12,9 +27,10 @@ const Inbox = () => {
       <div className="space-y-4">
         {mails.map((email) => (
           <div
-            key={email.timeStamp}
-            className={`p-4 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 ${
-              email.unread ? 'border-l-4 border-indigo-500' : 'border-l-4 border-gray-300'
+            onClick={() => handleEmailOpen(email)}
+            key={email.id}
+            className={`p-4 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer ${
+              !email.read ? 'border-l-4 border-indigo-500' : 'border-l-4 border-gray-300'
             }`}
           >
             <div className="flex justify-between items-center">
@@ -27,6 +43,7 @@ const Inbox = () => {
           </div>
         ))}
       </div>
+      {open && <EmailPopup email={selectedEmail} onClose={handleClosePopup} />}
     </div>
   );
 };
