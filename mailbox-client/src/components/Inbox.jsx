@@ -7,7 +7,7 @@ import { markMailAsRead, setMails } from '../store/slices/mailSlice';
 
 const Inbox = () => {
   const dispatch = useDispatch();
-  const mails = useGetInboxMail(); 
+  const mails = useSelector((state) => state.mail.mails); 
   const [open, setOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
   
@@ -17,7 +17,8 @@ const Inbox = () => {
     if (mails.length > 0) {
       dispatch(setMails(mails));
     }
-  }, [mails, dispatch]);
+  }, [mails]);
+
 
   const handleEmailOpen = async (email) => {
     setSelectedEmail(email);
@@ -39,6 +40,8 @@ const Inbox = () => {
       await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${email.to}/received/${email.id}.json`,{
         method: 'DELETE',
       })
+      const updatedMails = mails.filter((mail)=> mail.id !== email.id);
+      dispatch(setMails(updatedMails));
     }catch(error){
       console.log(error);
     }

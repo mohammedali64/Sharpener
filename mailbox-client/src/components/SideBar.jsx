@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
@@ -10,8 +10,20 @@ const SideBar = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname.split('/')[1] || 'inbox');
-  const InboxMails = useGetInboxMail();
-  const sentMails = useGetSentMails();
+    const [read,setRead] = useState();
+    const [unread,setUnread] = useState();
+  const InboxMails = useSelector((state) => state.mail.mails);
+  const sentMails = useSelector((state)=> state.getMail.mails);
+
+
+  useEffect(()=>{
+      const readMails = InboxMails.filter((mail)=> mail.read === true);
+      console.log(readMails.length);
+      setRead(readMails.length);
+      const UnReadMails = InboxMails.filter((mail)=> mail.read === false);
+      console.log(UnReadMails.length);
+      setUnread(UnReadMails.length);
+    },[InboxMails]);
 
   const handleLogout = async () => {
     try {
@@ -41,7 +53,8 @@ const SideBar = ({ user }) => {
             } transition-all duration-300`}
           >
             <span className="font-semibold">Inbox</span>
-            <span className="ml-2 text-sm bg-blue-200 text-indigo-800 px-2 rounded-full">{InboxMails.length}</span>
+            <span className="ml-2 text-sm bg-blue-200 text-indigo-800 px-2 rounded-full">{unread}</span>
+            <span className="ml-2 text-sm bg-blue-200 text-indigo-800 px-2 rounded-full">{read}</span>
           </button>
           <button
             onClick={() => handleNavigate('/sent')}

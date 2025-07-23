@@ -3,8 +3,11 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { formatDate } from '../Helper Function/FormatDate';
 import AddID from '../Helper Function/AddID';
+import { useDispatch } from 'react-redux';
+import { getSentMails } from '../store/slices/getMailSlice';
 
 const MailCompose = ({ user }) => {
+  const dispatch = useDispatch();
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -34,7 +37,7 @@ const MailCompose = ({ user }) => {
       body: JSON.stringify(mailData),
     });
 
-    const sentMailData = await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}/sent.json`, {
+    const sentData = await fetch(`https://mailbox-client-8c1d4-default-rtdb.firebaseio.com/mails/${sender}/sent.json`, {
       method: 'POST',
       body: JSON.stringify(mailData),
     });
